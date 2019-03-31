@@ -1,0 +1,6 @@
+This is an example in order to showcase the auto suggest parser feature.
+The idea is that an incomplete grammar can be parsed and the parser will
+suggest the next set of tokens. This feature can help end users consume/use
+a defined syntax without having to know all the productions/lexical units.
+
+
