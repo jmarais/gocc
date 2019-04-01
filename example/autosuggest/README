@@ -3,4 +3,9 @@ The idea is that an incomplete grammar can be parsed and the parser will
 suggest the next set of tokens. This feature can help end users consume/use
 a defined syntax without having to know all the productions/lexical units.
 
+The example is based around query strings with regards to a book database.
+In this example you have the following options:
 
+find ( author | title ) with time-range and "criteria"
+or
+textsearch "book" with "criteria" [ and time-range ]

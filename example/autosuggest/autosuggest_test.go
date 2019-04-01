@@ -1,13 +1,19 @@
-//   Licensed under the Apache License, Version 2.0 (the "License");
-//   you may not use this file except in compliance with the License.
-//   You may obtain a copy of the License at
-//
-//       http://www.apache.org/licenses/LICENSE-2.0
-//
-//   Unless required by applicable law or agreed to in writing, software
-//   distributed under the License is distributed on an "AS IS" BASIS,
-//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//   See the License for the specific language governing permissions and
-//   limitations under the License.
+package autosuggest
 
-package example
+import (
+	"testing"
+
+	"github.com/goccmack/gocc/example/autosuggest/lexer"
+	"github.com/goccmack/gocc/example/autosuggest/parser"
+)
+
+func TestQuery(t *testing.T) {
+	query := `find author with "Seuss" at 2019-01-01 13:13:13 -- 2019-01-01 13:13:12`
+	lex := lexer.NewLexer([]byte(query))
+	p := parser.NewParser()
+	st, err := p.Parse(lex)
+	if err != nil {
+		panic(err)
+	}
+	t.Logf("Parsed: %v:\n", st)
+}

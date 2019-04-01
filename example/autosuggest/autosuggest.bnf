@@ -1,0 +1,84 @@
+_lineComment : '/' '/' {.} '\n' ;
+_ws : ' ' | '\t' | '\n' | '\r' ;
+space : _lineComment | _ws { _ws } ;
+
+_decimal_digit : '0' - '9' ;
+_decimal_lit : ( '1' - '9' ) { _decimal_digit } ;
+int_lit : '0' | ['-'] _decimal_lit ;
+
+dayMonth : '-' _decimal_digit _decimal_digit ;
+
+number:  _decimal_digit { _decimal_digit } ;
+
+_upcase : 'A' - 'Z' ;
+_lowcase : 'a' - 'z' ;
+_id_char : _upcase | _lowcase | _decimal_digit ;
+_id : ( _upcase | _lowcase ) { _id_char } ;
+id : '"' _id '"' ;
+
+<<
+import (
+	"github.com/goccmack/gocc/example/autosuggest/ast"
+)
+>>
+
+Start
+ : Find									<< &ast.Search{Find: $0.(*ast.Find)} , nil >>
+ | TextSearch							<< &ast.Search{TextSearch: $0.(*ast.TextSearch)} , nil >>
+ ;
+
+Find
+ : "find" AuthorKeyWord Space "with" Space id TimeRange Space "at" Space TimeRange	<< ast.NewFind($1.(*ast.FindType), $5.(*ast.Criteria), $9.(*ast.DateTimeInterval)) , nil >>
+ | "find" TitleKeyWord Space "with" Space id Space "at" Space TimeRange	<< ast.NewFind($1.(*ast.FindType), $5.(*ast.Criteria), $9.(*ast.DateTimeInterval)) , nil >>
+ ;
+
+AuthorKeyWord
+ : "author"
+ | Space "author"
+ ;
+
+TitleKeyWord
+ : "title"
+ | Space "title"
+ ;
+
+TextSearch
+ : "textsearch" Space id Space "with" Space id Space "at" Space TimeRange	<< ast.NewTextSearch($2.(*ast.Book), $6.(*ast.Criteria), $10.(*ast.DateTimeInterval)) , nil >>
+ | "textsearch" Space id Space "with" Space id								<< ast.NewTextSearch($2.(*ast.Book), $6.(*ast.Criteria), nil) , nil >>
+ ;
+
+TimeRange
+ : TimeRangeKeyWord DateTimeInterval	<< $1, nil >>
+ ;
+
+TimeRangeKeyWord
+ : "timerange"
+ | Space "timerange"
+ ;
+
+DateTimeInterval
+ : DateTime "--" DateTime				<< ast.Interval(ast.NewDateTime($0.(*ast.DateTime)), ast.NewDateTime($2.(*ast.DateTime))), nil>>
+ ;
+
+DateTime
+ : Date Space TimeHMS space				<< ast.NewTime($0.(string) + " " + $2.(string), "2019-01-02 13:01:05").UnixNano(), nil >>
+ ;
+
+Date
+ : Number Number Number					<< $0.(string)+$1.(string)+$2.(string), nil >>
+ | Space Number Number Number			<< $1.(string)+$2.(string)+$3.(string), nil >>
+ ;
+
+TimeHMS
+ : Number ":" Number ":" Number			<< $0.(string)+ast.NewString($1)+$2.(string)+ast.NewString($3)+$4.(string), nil >>
+ ;
+
+Number
+ : int_lit								<< ast.NewString($0), nil >>
+ | dayMonth								<< ast.NewString($0), nil >>
+ | number								<< ast.NewString($0), nil >>
+ ;
+
+Space
+ : space								<< ast.NewSpace($0), nil >>
+ ;
