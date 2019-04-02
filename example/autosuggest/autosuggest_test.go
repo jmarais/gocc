@@ -9,7 +9,8 @@ import (
 )
 
 func TestQuery(t *testing.T) {
-	query := `find author with "Seuss" at timerange 2019-01-01 13:13:12 -- 2019-01-01 13:13:13`
+	// query := `find author with "Seuss" at timerange 2019-01-01 13:13:12 -- 2019-01-01 13:13:13`
+	query := `textsearch "The cat in the hat" with "It was too wet to play"`
 	lex := lexer.NewLexer([]byte(query))
 	p := parser.NewParser()
 	st, err := p.Parse(lex)
@@ -17,5 +18,5 @@ func TestQuery(t *testing.T) {
 		panic(err)
 	}
 	s := st.(*ast.Search)
-	t.Logf("Parsed: %#v:\n", s.FindAuthor)
+	t.Logf("Parsed: %s:\n", s.TextSearch)
 }

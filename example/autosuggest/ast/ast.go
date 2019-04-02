@@ -24,40 +24,45 @@ type Find struct {
 	Criteria *Criteria
 	Interval *DateTimeInterval
 }
-type TextSearch struct{}
+
+type TextSearch struct {
+	Book     string
+	Criteria *Criteria
+	Interval *DateTimeInterval
+}
+
 type Criteria struct {
-	s string
+	S string
 }
-type DateTimeInterval struct{}
-type Book struct{}
-type Interval struct{}
-type DateTime struct{}
+
+type DateTimeInterval struct {
+	From time.Time
+	To   time.Time
+}
+
 type Space struct {
-	s string
+	S string
 }
 
-func NewFindAuthor(criteria string, dateInterval interface{}) *FindAuthor {
-	var dateInter *DateTimeInterval
-	if dateInterval != nil {
-		dateInter = dateInterval.(*DateTimeInterval)
+func NewFindAuthor(criteria string, dateInterval *DateTimeInterval) *FindAuthor {
+	return &FindAuthor{Find{Criteria: &Criteria{criteria}, Interval: dateInterval}}
+}
+
+func NewFindTitle(criteria string, dateInterval *DateTimeInterval) *FindTitle {
+	return &FindTitle{Find{Criteria: &Criteria{criteria}, Interval: dateInterval}}
+}
+func NewTextSearch(book, criteria string, dateInterval *DateTimeInterval) *TextSearch {
+	return &TextSearch{Book: book, Criteria: &Criteria{criteria}, Interval: dateInterval}
+}
+func NewInterval(from, to time.Time) *DateTimeInterval {
+	return &DateTimeInterval{From: from, To: to}
+}
+func NewTime(date, format string) time.Time {
+	t, err := time.Parse(format, date)
+	if err != nil {
+		panic(err)
 	}
-	return &FindAuthor{Find{Criteria: &Criteria{criteria}, Interval: dateInter}}
-}
-
-func NewFindTitle(criteria string, dateInterval interface{}) *FindTitle {
-	return &FindTitle{Find{}}
-}
-func NewTextSearch(book, criteria, dateInterval interface{}) *TextSearch {
-	// book *Book, crit *Criteria, interval *DateTimeInterval
-	return &TextSearch{}
-}
-func NewInterval(from, to interface{}) *DateTimeInterval {
-	// from, to *DateTime
-	return &DateTimeInterval{}
-}
-func NewTime(date, format interface{}) *time.Time {
-	// date, format string
-	return &time.Time{}
+	return t
 }
 
 func NewString(s interface{}) string {

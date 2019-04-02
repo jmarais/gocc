@@ -3,6 +3,7 @@
 package parser
 
 import (
+    "time"
 	"github.com/goccmack/gocc/example/autosuggest/ast"
 )
 
@@ -123,23 +124,23 @@ var productionsTable = ProdTab{
 		},
 	},
 	ProdTabEntry{
-		String: `TextSearch : "textsearch" Space id Space "with" Space id Space "at" Space TimeRange	<< ast.NewTextSearch(X[2].(*ast.Book), X[6].(*ast.Criteria), X[10].(*ast.DateTimeInterval)) , nil >>`,
+		String: `TextSearch : "textsearch" Space id Space "with" Space id Space "at" Space TimeRange	<< ast.NewTextSearch(ast.NewString(X[2]), ast.NewString(X[6]), X[10].(*ast.DateTimeInterval)) , nil >>`,
 		Id:         "TextSearch",
 		NTType:     6,
 		Index:      10,
 		NumSymbols: 11,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewTextSearch(X[2].(*ast.Book), X[6].(*ast.Criteria), X[10].(*ast.DateTimeInterval)) , nil
+			return ast.NewTextSearch(ast.NewString(X[2]), ast.NewString(X[6]), X[10].(*ast.DateTimeInterval)) , nil
 		},
 	},
 	ProdTabEntry{
-		String: `TextSearch : "textsearch" Space id Space "with" Space id	<< ast.NewTextSearch(X[2].(*ast.Book), X[6].(*ast.Criteria), nil) , nil >>`,
+		String: `TextSearch : "textsearch" Space id Space "with" Space id	<< ast.NewTextSearch(ast.NewString(X[2]), ast.NewString(X[6]), nil) , nil >>`,
 		Id:         "TextSearch",
 		NTType:     6,
 		Index:      11,
 		NumSymbols: 7,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewTextSearch(X[2].(*ast.Book), X[6].(*ast.Criteria), nil) , nil
+			return ast.NewTextSearch(ast.NewString(X[2]), ast.NewString(X[6]), nil) , nil
 		},
 	},
 	ProdTabEntry{
@@ -173,33 +174,33 @@ var productionsTable = ProdTab{
 		},
 	},
 	ProdTabEntry{
-		String: `DateTimeInterval : DateTime "--" DateTime	<< ast.NewInterval(X[0].(int64), X[2].(int64)), nil >>`,
+		String: `DateTimeInterval : DateTime "--" DateTime	<< ast.NewInterval(X[0].(time.Time), X[2].(time.Time)), nil >>`,
 		Id:         "DateTimeInterval",
 		NTType:     9,
 		Index:      15,
 		NumSymbols: 3,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewInterval(X[0].(int64), X[2].(int64)), nil
+			return ast.NewInterval(X[0].(time.Time), X[2].(time.Time)), nil
 		},
 	},
 	ProdTabEntry{
-		String: `DateTime : Date Space TimeHMS	<< ast.NewTime(X[0].(string) + " " + X[2].(string), "2019-01-02 13:01:05").UnixNano(), nil >>`,
+		String: `DateTime : Date Space TimeHMS	<< ast.NewTime(X[0].(string) + " " + X[2].(string), "2006-01-02 15:04:05"), nil >>`,
 		Id:         "DateTime",
 		NTType:     10,
 		Index:      16,
 		NumSymbols: 3,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewTime(X[0].(string) + " " + X[2].(string), "2019-01-02 13:01:05").UnixNano(), nil
+			return ast.NewTime(X[0].(string) + " " + X[2].(string), "2006-01-02 15:04:05"), nil
 		},
 	},
 	ProdTabEntry{
-		String: `DateTime : Date Space TimeHMS Space	<< ast.NewTime(X[0].(string) + " " + X[2].(string), "2019-01-02 13:01:05").UnixNano(), nil >>`,
+		String: `DateTime : Date Space TimeHMS Space	<< ast.NewTime(X[0].(string) + " " + X[2].(string), "2006-01-02 15:04:05"), nil >>`,
 		Id:         "DateTime",
 		NTType:     10,
 		Index:      17,
 		NumSymbols: 4,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewTime(X[0].(string) + " " + X[2].(string), "2019-01-02 13:01:05").UnixNano(), nil
+			return ast.NewTime(X[0].(string) + " " + X[2].(string), "2006-01-02 15:04:05"), nil
 		},
 	},
 	ProdTabEntry{
