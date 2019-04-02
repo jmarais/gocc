@@ -3,6 +3,7 @@ package autosuggest
 import (
 	"testing"
 
+	"github.com/goccmack/gocc/example/autosuggest/ast"
 	"github.com/goccmack/gocc/example/autosuggest/lexer"
 	"github.com/goccmack/gocc/example/autosuggest/parser"
 )
@@ -15,5 +16,6 @@ func TestQuery(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	t.Logf("Parsed: %v:\n", st)
+	s := st.(*ast.Search)
+	t.Logf("Parsed: %#v:\n", s.FindAuthor)
 }

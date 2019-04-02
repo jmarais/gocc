@@ -63,23 +63,23 @@ var productionsTable = ProdTab{
 		},
 	},
 	ProdTabEntry{
-		String: `FindAuthor : "find" AuthorKeyWord Space "with" Space id Space "at" Space TimeRange	<< ast.NewFindAuthor(X[5].(string), X[9].(*ast.DateTimeInterval)) , nil >>`,
+		String: `FindAuthor : "find" AuthorKeyWord Space "with" Space id Space "at" Space TimeRange	<< ast.NewFindAuthor(ast.NewString(X[5]), X[9].(*ast.DateTimeInterval)) , nil >>`,
 		Id:         "FindAuthor",
 		NTType:     2,
 		Index:      4,
 		NumSymbols: 10,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewFindAuthor(X[5].(string), X[9].(*ast.DateTimeInterval)) , nil
+			return ast.NewFindAuthor(ast.NewString(X[5]), X[9].(*ast.DateTimeInterval)) , nil
 		},
 	},
 	ProdTabEntry{
-		String: `FindTitle : "find" TitleKeyWord Space "with" Space id Space "at" Space TimeRange	<< ast.NewFindTitle(X[5].(string), X[9].(*ast.DateTimeInterval)) , nil >>`,
+		String: `FindTitle : "find" TitleKeyWord Space "with" Space id Space "at" Space TimeRange	<< ast.NewFindTitle(ast.NewString(X[5]), X[9].(*ast.DateTimeInterval)) , nil >>`,
 		Id:         "FindTitle",
 		NTType:     3,
 		Index:      5,
 		NumSymbols: 10,
 		ReduceFunc: func(X []Attrib) (Attrib, error) {
-			return ast.NewFindTitle(X[5].(string), X[9].(*ast.DateTimeInterval)) , nil
+			return ast.NewFindTitle(ast.NewString(X[5]), X[9].(*ast.DateTimeInterval)) , nil
 		},
 	},
 	ProdTabEntry{

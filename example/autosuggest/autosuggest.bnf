@@ -29,11 +29,11 @@ Start
  ;
 
 FindAuthor
- : "find" AuthorKeyWord Space "with" Space id Space "at" Space TimeRange		<< ast.NewFindAuthor($5.(string), $9.(*ast.DateTimeInterval)) , nil >>
+ : "find" AuthorKeyWord Space "with" Space id Space "at" Space TimeRange		<< ast.NewFindAuthor(ast.NewString($5), $9.(*ast.DateTimeInterval)) , nil >>
  ;
 
 FindTitle
- : "find" TitleKeyWord Space "with" Space id Space "at" Space TimeRange			<< ast.NewFindTitle($5.(string), $9.(*ast.DateTimeInterval)) , nil >>
+ : "find" TitleKeyWord Space "with" Space id Space "at" Space TimeRange			<< ast.NewFindTitle(ast.NewString($5), $9.(*ast.DateTimeInterval)) , nil >>
  ;
 
 AuthorKeyWord

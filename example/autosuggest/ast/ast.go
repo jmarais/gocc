@@ -1,8 +1,9 @@
 package ast
 
 import (
-	"github.com/goccmack/gocc/example/autosuggest/token"
 	"time"
+
+	"github.com/goccmack/gocc/example/autosuggest/token"
 )
 
 type Search struct {
@@ -14,15 +15,19 @@ type Search struct {
 type FindAuthor struct {
 	Find
 }
+
 type FindTitle struct {
 	Find
 }
+
 type Find struct {
 	Criteria *Criteria
 	Interval *DateTimeInterval
 }
 type TextSearch struct{}
-type Criteria struct{}
+type Criteria struct {
+	s string
+}
 type DateTimeInterval struct{}
 type Book struct{}
 type Interval struct{}
@@ -31,22 +36,15 @@ type Space struct {
 	s string
 }
 
-func NewFindAuthor(criteria, dateInterval interface{}) *FindAuthor {
-	// findType *FindType, crit *Criteria, interval *DateTimeInterval
-	// paramStr := ""
-	// var err error
-	// if param != nil {
-	// 	plit := param.(*token.Token).Lit
-	// 	paramStr, err = strconv.Unquote(string(plit))
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// }
-	// return &UDF{Function: newString(name), Parameter: paramStr}, nil
-	return &FindAuthor{Find{}}
+func NewFindAuthor(criteria string, dateInterval interface{}) *FindAuthor {
+	var dateInter *DateTimeInterval
+	if dateInterval != nil {
+		dateInter = dateInterval.(*DateTimeInterval)
+	}
+	return &FindAuthor{Find{Criteria: &Criteria{criteria}, Interval: dateInter}}
 }
 
-func NewFindTitle(criteria, dateInterval interface{}) *FindTitle {
+func NewFindTitle(criteria string, dateInterval interface{}) *FindTitle {
 	return &FindTitle{Find{}}
 }
 func NewTextSearch(book, criteria, dateInterval interface{}) *TextSearch {
@@ -57,7 +55,7 @@ func NewInterval(from, to interface{}) *DateTimeInterval {
 	// from, to *DateTime
 	return &DateTimeInterval{}
 }
-func NewTime(date, format string) *time.Time {
+func NewTime(date, format interface{}) *time.Time {
 	// date, format string
 	return &time.Time{}
 }
