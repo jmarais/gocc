@@ -23,13 +23,19 @@ import (
 >>
 
 Start
- : Find									<< &ast.Search{Find: $0.(*ast.Find)} , nil >>
+ : FindAuthor							<< &ast.Search{FindAuthor: $0.(*ast.FindAuthor)} , nil >>
+ | FindTitle							<< &ast.Search{FindTitle: $0.(*ast.FindTitle)} , nil >>
  | TextSearch							<< &ast.Search{TextSearch: $0.(*ast.TextSearch)} , nil >>
  ;
 
-Find
- : "find" AuthorKeyWord Space "with" Space id TimeRange Space "at" Space TimeRange	<< ast.NewFind($1.(*ast.FindType), $5.(*ast.Criteria), $9.(*ast.DateTimeInterval)) , nil >>
- | "find" TitleKeyWord Space "with" Space id Space "at" Space TimeRange	<< ast.NewFind($1.(*ast.FindType), $5.(*ast.Criteria), $9.(*ast.DateTimeInterval)) , nil >>
+FindAuthor
+ : "find" AuthorKeyWord Space "with" Space id Space "at" Space TimeRange		<< ast.NewFindAuthor($5.(string), $9.(*ast.DateTimeInterval)) , nil >>
+ | "find" AuthorKeyWord Space "with" Space id Space "at" Space TimeRange Space	<< ast.NewFindAuthor($5.(string), $9.(*ast.DateTimeInterval)) , nil >>
+ ;
+
+FindTitle
+ : "find" TitleKeyWord Space "with" Space id Space "at" Space TimeRange			<< ast.NewFindTitle($5.(string), $9.(*ast.DateTimeInterval)) , nil >>
+ | "find" TitleKeyWord Space "with" Space id Space "at" Space TimeRange Space	<< ast.NewFindTitle($5.(string), $9.(*ast.DateTimeInterval)) , nil >>
  ;
 
 AuthorKeyWord
@@ -48,7 +54,8 @@ TextSearch
  ;
 
 TimeRange
- : TimeRangeKeyWord DateTimeInterval	<< $1, nil >>
+ : TimeRangeKeyWord DateTimeInterval		<< $1, nil >>
+ | TimeRangeKeyWord DateTimeInterval Space	<< $1, nil >>
  ;
 
 TimeRangeKeyWord
@@ -57,11 +64,12 @@ TimeRangeKeyWord
  ;
 
 DateTimeInterval
- : DateTime "--" DateTime				<< ast.Interval(ast.NewDateTime($0.(*ast.DateTime)), ast.NewDateTime($2.(*ast.DateTime))), nil>>
+ : DateTime "--" DateTime				<< ast.NewInterval($0.(*ast.DateTime), $2.(*ast.DateTime)), nil>>
  ;
 
 DateTime
- : Date Space TimeHMS space				<< ast.NewTime($0.(string) + " " + $2.(string), "2019-01-02 13:01:05").UnixNano(), nil >>
+ : Date Space TimeHMS 					<< ast.NewTime($0.(string) + " " + $2.(string), "2019-01-02 13:01:05").UnixNano(), nil >>
+ | Date Space TimeHMS Space				<< ast.NewTime($0.(string) + " " + $2.(string), "2019-01-02 13:01:05").UnixNano(), nil >>
  ;
 
 Date

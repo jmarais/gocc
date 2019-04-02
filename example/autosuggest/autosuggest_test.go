@@ -8,7 +8,7 @@ import (
 )
 
 func TestQuery(t *testing.T) {
-	query := `find author with "Seuss" at 2019-01-01 13:13:13 -- 2019-01-01 13:13:12`
+	query := `find author with "Seuss" at timerange 2019-01-01 13:13:12 -- 2019-01-01 13:13:13`
 	lex := lexer.NewLexer([]byte(query))
 	p := parser.NewParser()
 	st, err := p.Parse(lex)
