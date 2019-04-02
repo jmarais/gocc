@@ -30,12 +30,10 @@ Start
 
 FindAuthor
  : "find" AuthorKeyWord Space "with" Space id Space "at" Space TimeRange		<< ast.NewFindAuthor($5.(string), $9.(*ast.DateTimeInterval)) , nil >>
- | "find" AuthorKeyWord Space "with" Space id Space "at" Space TimeRange Space	<< ast.NewFindAuthor($5.(string), $9.(*ast.DateTimeInterval)) , nil >>
  ;
 
 FindTitle
  : "find" TitleKeyWord Space "with" Space id Space "at" Space TimeRange			<< ast.NewFindTitle($5.(string), $9.(*ast.DateTimeInterval)) , nil >>
- | "find" TitleKeyWord Space "with" Space id Space "at" Space TimeRange Space	<< ast.NewFindTitle($5.(string), $9.(*ast.DateTimeInterval)) , nil >>
  ;
 
 AuthorKeyWord
@@ -55,7 +53,6 @@ TextSearch
 
 TimeRange
  : TimeRangeKeyWord DateTimeInterval		<< $1, nil >>
- | TimeRangeKeyWord DateTimeInterval Space	<< $1, nil >>
  ;
 
 TimeRangeKeyWord
@@ -64,7 +61,7 @@ TimeRangeKeyWord
  ;
 
 DateTimeInterval
- : DateTime "--" DateTime				<< ast.NewInterval($0.(*ast.DateTime), $2.(*ast.DateTime)), nil>>
+ : DateTime "--" DateTime				<< ast.NewInterval($0.(int64), $2.(int64)), nil>>
  ;
 
 DateTime
