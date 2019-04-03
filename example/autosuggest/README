@@ -6,6 +6,6 @@ a defined syntax without having to know all the productions/lexical units.
 The example is based around query strings with regards to a book database.
 In this example you have the following options:
 
-find ( author | title ) with time-range and "criteria"
+find ( author | title ) with "criteria" at time-range
 or
-textsearch "book" with "criteria" [ and time-range ]
+textsearch "book" with "criteria" [ at time-range ]
