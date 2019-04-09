@@ -32,7 +32,7 @@ func GenToken(pkg, outdir string, tokMap *token.TokenMap) {
 		panic(err)
 	}
 	buf := new(bytes.Buffer)
-	err = tmpl.Execute(buf, TokenData{TypMap: tokMap.TypeMap, IdMap: typeMap(tokMap)})
+	err = tmpl.Execute(buf, TokenData{TypMap: tokMap.TypeMap, IdMap: typeMap(tokMap), CharMap: charMap(tokMap)})
 	// Use go/format to indent the idMap literal correctly.
 	source, err := format.Source(buf.Bytes())
 	if err != nil {
@@ -49,9 +49,21 @@ func typeMap(tokMap *token.TokenMap) []string {
 	return tm
 }
 
+func charMap(tokMap *token.TokenMap) []string {
+	if len(tokMap.CharMap) == 0 {
+		return []string{}
+	}
+	tm := make([]string, len(tokMap.TypeMap))
+	for i, sym := range tokMap.TypeMap {
+		tm[i] = fmt.Sprintf("%d: `%s`", i, tokMap.CharMap[sym])
+	}
+	return tm
+}
+
 type TokenData struct {
-	IdMap  []string
-	TypMap []string
+	IdMap   []string
+	TypMap  []string
+	CharMap []string
 }
 
 const TokenMapSrc string = `
@@ -89,6 +101,9 @@ func (p Pos) String() string {
 type TokenMap struct {
 	typeMap []string
 	idMap   map[string]Type
+{{- if .CharMap }}
+	charMap map[Type]string
+{{- end }}
 }
 
 func (m TokenMap) Id(tok Type) string {
@@ -114,6 +129,12 @@ func (m TokenMap) StringType(typ Type) string {
 	return fmt.Sprintf("%s(%d)", m.Id(typ), typ)
 }
 
+{{- if .CharMap }}
+func (m TokenMap) Characters(typ Type) string {
+	return fmt.Sprintf("%s", m.charMap[typ])
+}
+{{- end }}
+
 var TokMap = TokenMap{
 	typeMap: []string{
 {{- range .TypMap }}
@@ -126,5 +147,13 @@ var TokMap = TokenMap{
 		{{printf "%s" .}},
 {{- end }}
 	},
+
+{{- if .CharMap }}
+	charMap: map[Type]string{
+{{- range .CharMap }}
+		{{printf "%s" .}},
+{{- end }}
+	},
+{{- end }}
 }
 `

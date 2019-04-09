@@ -32,6 +32,7 @@ func (p Pos) String() string {
 type TokenMap struct {
 	typeMap []string
 	idMap   map[string]Type
+	charMap map[Type]string
 }
 
 func (m TokenMap) Id(tok Type) string {
@@ -55,6 +56,9 @@ func (m TokenMap) TokenString(tok *Token) string {
 
 func (m TokenMap) StringType(typ Type) string {
 	return fmt.Sprintf("%s(%d)", m.Id(typ), typ)
+}
+func (m TokenMap) Characters(typ Type) string {
+	return fmt.Sprintf("%s", m.charMap[typ])
 }
 
 var TokMap = TokenMap{
@@ -94,5 +98,23 @@ var TokMap = TokenMap{
 		"dayMonth":   13,
 		"number":     14,
 		"space":      15,
+	},
+	charMap: map[Type]string{
+		0:  ``,
+		1:  ``,
+		2:  `'f''i''n''d'`,
+		3:  `'w''i''t''h'`,
+		4:  `'"'('A'-'Z'|'a'-'z'){'A'-'Z'|'a'-'z'|'0'-'9'|' '|'\t'|'\n'|'\r'}'"'`,
+		5:  `'a''t'`,
+		6:  `'a''u''t''h''o''r'`,
+		7:  `'t''i''t''l''e'`,
+		8:  `'t''e''x''t''s''e''a''r''c''h'`,
+		9:  `'t''i''m''e''r''a''n''g''e'`,
+		10: `'-''-'`,
+		11: `':'`,
+		12: `'0'|['-']('1'-'9'){'0'-'9'}`,
+		13: `'-''0'-'9''0'-'9'`,
+		14: `'0'-'9'{'0'-'9'}`,
+		15: `'/''/'{}'\n'|' '|'\t'|'\n'|'\r'{' '|'\t'|'\n'|'\r'}`,
 	},
 }

@@ -147,3 +147,122 @@ func (this *LexPart) String() string {
 	}
 	return buf.String()
 }
+
+func (this *LexPart) TokenTranslations() map[string]string {
+	tokenTranslations := make(map[string]string)
+	tokens := this.TokenIds()
+	for _, token := range tokens {
+		tokenTranslations[token] = this.resolveTokenToChars(this.TokDefs[token])
+	}
+	return tokenTranslations
+}
+
+func (this *LexPart) resolveTokenToChars(currTokenDef *LexTokDef) string {
+	v := &resolvRegsVisitor{this.RegDefs, "", false}
+	v.Visit(currTokenDef.LexPattern())
+	return v.result
+}
+
+type resolvRegsVisitor struct {
+	regDefs map[string]*LexRegDef
+	result  string
+	debug   bool
+}
+
+func (v *resolvRegsVisitor) Visit(node LexNode) {
+	if v.debug {
+		fmt.Printf("Visit: %#v\n", node)
+	}
+	switch n := node.(type) {
+	case *LexAlt:
+		if v.debug {
+			fmt.Printf("LexAlt: %v -- %#v\n", n, n)
+		}
+		for i := range n.Terms {
+			if v.debug {
+				fmt.Printf("LexAlt: Visiting: %v\n", n.Terms[i])
+			}
+			v.Visit(n.Terms[i])
+		}
+	case *LexCharLit:
+		v.result += n.String()
+		if v.debug {
+			fmt.Printf("LexCharLit: %v\n", n)
+		}
+	case *LexCharRange:
+		v.result += n.String()
+		if v.debug {
+			fmt.Printf("LexCharRange: %v\n", n)
+		}
+	case *LexDot:
+		if v.debug {
+			fmt.Printf("LexDot: %v\n", n)
+		}
+	case *LexGroupPattern:
+
+		if v.debug {
+			fmt.Printf("LexGroupPattern: %v\n", n)
+		}
+		v.result += "("
+		v.Visit(n.LexPattern)
+		v.result += ")"
+	case *LexIgnoredTokDef:
+		if v.debug {
+			fmt.Printf("LexIgnoredTokDef: %v\n", n)
+		}
+	case *LexImports:
+		if v.debug {
+			fmt.Printf("LexImports: %v\n", n)
+		}
+	case *LexOptPattern:
+		if v.debug {
+			fmt.Printf("LexOptPattern: %v\n", n)
+		}
+		v.result += "["
+		v.Visit(n.LexPattern)
+		v.result += "]"
+	case *LexPattern:
+		if v.debug {
+			fmt.Printf("LexPattern: %v\n", n)
+		}
+		addseperator := len(n.Alternatives) > 1
+		last := len(n.Alternatives) - 1
+		for i := range n.Alternatives {
+			if v.debug {
+				fmt.Printf("LexPattern: Visiting: %v\n", n.Alternatives[i])
+			}
+			v.Visit(n.Alternatives[i])
+			if addseperator && i != last {
+				v.result += "|"
+			}
+		}
+	case *LexProductions:
+		if v.debug {
+			fmt.Printf("LexProductions: %v\n", n)
+		}
+	case *LexRegDef:
+		if v.debug {
+			fmt.Printf("LexRegDef: %v\n", n)
+		}
+	case *LexRegDefId:
+		if v.debug {
+			fmt.Printf("Found regDef LexRegDefId: %#v -- %s\n", n, n.String())
+		}
+		v.Visit(v.regDefs[n.String()].LexPattern())
+	case *LexRepPattern:
+		if v.debug {
+			fmt.Printf("LexRepPattern: %v\n", n)
+		}
+		v.result += "{"
+		v.Visit(n.LexPattern)
+		v.result += "}"
+	case *LexTokDef:
+		if v.debug {
+			fmt.Printf("LexTokDef: %v\n", n)
+		}
+	default:
+		if v.debug {
+			fmt.Printf("UNKNOWN: %#v\n", n)
+		}
+	}
+}

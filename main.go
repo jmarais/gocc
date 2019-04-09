@@ -96,6 +96,7 @@ func main() {
 	tokenMap = outToken.NewTokenMap(gSymbols.ListTerminals())
 	if !cfg.NoLexer() {
 		genLexer.Gen(cfg.Package(), cfg.OutDir(), g.LexPart.Header.SDTLit, lexSets, tokenMap, cfg)
+		tokenMap.AddCharacterMap(g.LexPart.TokenTranslations())
 	}
 
 	if g.SyntaxPart != nil {

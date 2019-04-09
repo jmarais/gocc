@@ -17,12 +17,14 @@ package token
 type TokenMap struct {
 	IdMap   map[string]int
 	TypeMap []string
+	CharMap map[string]string
 }
 
 func NewTokenMap(symbols []string) *TokenMap {
 	tm := &TokenMap{
 		IdMap:   make(map[string]int),
 		TypeMap: make([]string, len(symbols)),
+		CharMap: nil,
 	}
 
 	for i, sym := range symbols {
@@ -30,4 +32,8 @@ func NewTokenMap(symbols []string) *TokenMap {
 		tm.TypeMap[i] = sym
 	}
 	return tm
+}
+
+func (this *TokenMap) AddCharacterMap(c map[string]string) {
+	this.CharMap = c
 }
